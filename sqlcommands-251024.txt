@@ -1,0 +1,1175 @@
+
+SQL*Plus: Release 19.0.0.0.0 - Production on Fri Oct 25 13:35:44 2024
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+Enter user-name: system/manager
+ERROR:
+ORA-28002: the password will expire within 7 days
+
+
+Last Successful login time: Fri Oct 25 2024 11:08:35 +05:30
+
+Connected to:
+Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+
+SQL> CREATE TABLE department (
+  2  did INT CONSTRAINT did_pk PRIMARY KEY,
+  3  dname VARCHAR2(30),
+  4  hod VARCHAR2(30),
+  5  block VARCHAR2(5));
+CREATE TABLE department (
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> EDIT
+Wrote file afiedt.buf
+
+  1  CREATE TABLE department (
+  2  did INT CONSTRAINT did_pk PRIMARY KEY,
+  3  dname VARCHAR2(30),
+  4  hod VARCHAR2(30),
+  5* block VARCHAR2(5))
+SQL> DROP TABLE department;
+
+Table dropped.
+
+SQL> CREATE TABLE department (
+  2  did INT CONSTRAINT did_pk PRIMARY KEY,
+  3  dname VARCHAR2(30),
+  4  hod VARCHAR2(30),
+  5  block VARCHAR2(5));
+did INT CONSTRAINT did_pk PRIMARY KEY,
+                   *
+ERROR at line 2:
+ORA-02264: name already used by an existing constraint
+
+
+SQL> DESC user_constraints;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OWNER                                              VARCHAR2(128)
+ CONSTRAINT_NAME                           NOT NULL VARCHAR2(128)
+ CONSTRAINT_TYPE                                    VARCHAR2(1)
+ TABLE_NAME                                NOT NULL VARCHAR2(128)
+ SEARCH_CONDITION                                   LONG
+ SEARCH_CONDITION_VC                                VARCHAR2(4000)
+ R_OWNER                                            VARCHAR2(128)
+ R_CONSTRAINT_NAME                                  VARCHAR2(128)
+ DELETE_RULE                                        VARCHAR2(9)
+ STATUS                                             VARCHAR2(8)
+ DEFERRABLE                                         VARCHAR2(14)
+ DEFERRED                                           VARCHAR2(9)
+ VALIDATED                                          VARCHAR2(13)
+ GENERATED                                          VARCHAR2(14)
+ BAD                                                VARCHAR2(3)
+ RELY                                               VARCHAR2(4)
+ LAST_CHANGE                                        DATE
+ INDEX_OWNER                                        VARCHAR2(128)
+ INDEX_NAME                                         VARCHAR2(128)
+ INVALID                                            VARCHAR2(7)
+ VIEW_RELATED                                       VARCHAR2(14)
+ ORIGIN_CON_ID                                      NUMBER
+
+SQL> DELETE FROM user_constraints WHERE contraint_name = 'DID_PK';
+DELETE FROM user_constraints WHERE contraint_name = 'DID_PK'
+                                   *
+ERROR at line 1:
+ORA-00904: "CONTRAINT_NAME": invalid identifier
+
+
+SQL> DELETE FROM user_constraints WHERE conStraint_name = 'DID_PK';
+DELETE FROM user_constraints WHERE conStraint_name = 'DID_PK'
+            *
+ERROR at line 1:
+ORA-01031: insufficient privileges
+
+
+SQL> disconnect;
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+SQL> connect sys;
+Enter password:
+ERROR:
+ORA-28009: connection as SYS should be as SYSDBA or SYSOPER
+
+
+SQL> connect sys
+Enter password:
+ERROR:
+ORA-28009: connection as SYS should be as SYSDBA or SYSOPER
+
+
+SQL> connect system/manager;
+ERROR:
+ORA-28002: the password will expire within 7 days
+
+
+Connected.
+SQL> CREATE TABLE department (
+  2  did INT CONSTRAINT did_pk1 PRIMARY KEY,
+  3  dname VARCHAR2(30),
+  4  hod VARCHAR2(30),
+  5  block VARCHAR2(5));
+did INT CONSTRAINT did_pk1 PRIMARY KEY,
+                   *
+ERROR at line 2:
+ORA-02264: name already used by an existing constraint
+
+
+SQL> CREATE TABLE department (
+  2  did INT CONSTRAINT did_pk2 PRIMARY KEY,
+  3  dname VARCHAR2(30),
+  4  hod VARCHAR2(30),
+  5  block VARCHAR2(5));
+
+Table created.
+
+SQL> CREATE TABLE student (
+  2  sid INT PRIMARY KEY,
+  3  sname VARCHAR2(30),
+  4  depart INT CONSTRAINT depart_fk REFERENCES department(did));
+CREATE TABLE student (
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  CREATE TABLE student (
+  2  sid INT PRIMARY KEY,
+  3  sname VARCHAR2(30),
+  4* depart INT CONSTRAINT depart_fk REFERENCES department(did))
+SQL> DROP TABLE student;
+
+Table dropped.
+
+SQL> CREATE TABLE student (
+  2  sid INT PRIMARY KEY,
+  3  sname VARCHAR2(30),
+  4  depart INT CONSTRAINT depart_fk1 REFERENCES department(did))
+  5  /
+
+Table created.
+
+SQL> INSERT INTO student VALUES (101, 'Vivek', 1);
+INSERT INTO student VALUES (101, 'Vivek', 1)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (SYSTEM.DEPART_FK1) violated - parent key not
+found
+
+
+SQL> DESC department;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DID                                       NOT NULL NUMBER(38)
+ DNAME                                              VARCHAR2(30)
+ HOD                                                VARCHAR2(30)
+ BLOCK                                              VARCHAR2(5)
+
+SQL> INSERT INTO department VALUES (1,'Computer Science and Engineering','Adhilakshmi','R');
+INSERT INTO department VALUES (1,'Computer Science and Engineering','Adhilakshmi','R')
+                                 *
+ERROR at line 1:
+ORA-12899: value too large for column "SYSTEM"."DEPARTMENT"."DNAME" (actual:
+32, maximum: 30)
+
+
+SQL> ALTER TABLE department MODIFY (dname VARCHAR2(50));
+
+Table altered.
+
+SQL> INSERT INTO department VALUES (1,'Computer Science and Engineering','Adhilakshmi','R');
+
+1 row created.
+
+SQL> INSERT INTO department VALUES (2,'Information Technology','Rammohan','VS');
+
+1 row created.
+
+SQL> SELECT * FROM department;
+
+       DID DNAME
+---------- --------------------------------------------------
+HOD                            BLOCK
+------------------------------ -----
+         1 Computer Science and Engineering
+Adhilakshmi                    R
+
+         2 Information Technology
+Rammohan                       VS
+
+
+SQL> INSERT INTO student VALUES (101, 'Vivek', 1);
+
+1 row created.
+
+SQL> INSERT INTO student VALUES (102, 'Sakshith', 3);
+INSERT INTO student VALUES (102, 'Sakshith', 3)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (SYSTEM.DEPART_FK1) violated - parent key not
+found
+
+
+SQL> INSERT INTO student VALUES (102, 'Sakshith', null);
+
+1 row created.
+
+SQL> ALTER TABLE student DROP CONSTRAINT depart_fk1;
+
+Table altered.
+
+SQL> INSERT INTO student VALUES (102, 'Sakshith', 3);
+INSERT INTO student VALUES (102, 'Sakshith', 3)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C009350) violated
+
+
+SQL> INSERT INTO student VALUES (103, 'Sakshith', 3);
+
+1 row created.
+
+SQL> ALTER TABLE student ADD CONSTRAINT FOREIGN KEY(depart) REFERENCES department(did);
+ALTER TABLE student ADD CONSTRAINT FOREIGN KEY(depart) REFERENCES department(did)
+                                              *
+ERROR at line 1:
+ORA-00902: invalid datatype
+
+
+SQL> ALTER TABLE student ADD CONSTRAINT depart_fk1 FOREIGN KEY(depart) REFERENCES department(did);
+ALTER TABLE student ADD CONSTRAINT depart_fk1 FOREIGN KEY(depart) REFERENCES department(did)
+                                   *
+ERROR at line 1:
+ORA-02298: cannot validate (SYSTEM.DEPART_FK1) - parent keys not found
+
+
+SQL> INSERT INTO department VALUES (3,'Electronics & Communication','Amar','JCB');
+Enter value for communication:
+SQL> INSERT INTO department VALUES (3,'Electronics and Communication','Amar','JCB');
+
+1 row created.
+
+SQL> ALTER TABLE student ADD CONSTRAINT FOREIGN KEY(depart) REFERENCES department(did);
+ALTER TABLE student ADD CONSTRAINT FOREIGN KEY(depart) REFERENCES department(did)
+                                              *
+ERROR at line 1:
+ORA-00902: invalid datatype
+
+
+SQL> ALTER TABLE student ADD CONSTRAINT depart_fk1 FOREIGN KEY(depart) REFERENCES department(did);
+
+Table altered.
+
+SQL> INSERT INTO student VALUES (104, 'Muneeb', 5);
+INSERT INTO student VALUES (104, 'Muneeb', 5)
+*
+ERROR at line 1:
+ORA-02291: integrity constraint (SYSTEM.DEPART_FK1) violated - parent key not
+found
+
+
+SQL> ALTER TABLE student ADD (phone NUMBER(10), address VARCHAR2(100));
+
+Table altered.
+
+SQL> DESC student;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SID                                       NOT NULL NUMBER(38)
+ SNAME                                              VARCHAR2(30)
+ DEPART                                             NUMBER(38)
+ PHONE                                              NUMBER(10)
+ ADDRESS                                            VARCHAR2(100)
+
+SQL> ALTER TABLE student RENAME phone to contact_number;
+ALTER TABLE student RENAME phone to contact_number
+                           *
+ERROR at line 1:
+ORA-14155: missing PARTITION, PARTITIONS, SUBPARTITION, or SUBPARTITIONS
+keyword
+
+
+SQL> ALTER TABLE student RENAME COLUMN phone to contact_number;
+
+Table altered.
+
+SQL> DESC student;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SID                                       NOT NULL NUMBER(38)
+ SNAME                                              VARCHAR2(30)
+ DEPART                                             NUMBER(38)
+ CONTACT_NUMBER                                     NUMBER(10)
+ ADDRESS                                            VARCHAR2(100)
+
+SQL> ALTER TABLE student DROP COLUMN address;
+
+Table altered.
+
+SQL> ALTER TABLE student DROP (contact_number);
+
+Table altered.
+
+SQL> SELECT * FROM student;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Sakshith
+       103 Sakshith                                3
+
+SQL> DELETE FROM student;
+
+3 rows deleted.
+
+SQL> SELECT * FROM student;
+
+no rows selected
+
+SQL> ROLLBACK;
+
+Rollback complete.
+
+SQL> SELECT * FROM student;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Sakshith
+       103 Sakshith                                3
+
+SQL> TRUNCATE TABLE student;
+
+Table truncated.
+
+SQL> SELECT * FROM student;
+
+no rows selected
+
+SQL> ROLLBACK;
+
+Rollback complete.
+
+SQL> SELECT * FROM student;
+
+no rows selected
+
+SQL> RENAME student TO employee;
+RENAME student TO employee
+                  *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> DROP TABLE EMPLOYEE;
+
+Table dropped.
+
+SQL> RENAME student TO employee;
+
+Table renamed.
+
+SQL> INSERT INTO employee VALUES (101, 'Vivek', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (102, 'Muneeb', 2);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (103, 'Sakshith', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (104, 'Kamal', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (105, 'Lalu Yadhav', 3);
+
+1 row created.
+
+SQL> CREATE TABLE student AS SELECT * FROM employee;
+
+Table created.
+
+SQL> SELECT * FROM student;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 Sakshith                                1
+       104 Kamal                                   1
+       105 Lalu Yadhav                             3
+
+SQL> SELECT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 Sakshith                                1
+       104 Kamal                                   1
+       105 Lalu Yadhav                             3
+
+SQL> CREATE TABLE student1 AS SELECT * FROM employee WHERE 1 = 2;
+
+Table created.
+
+SQL> SELECT * FROM student1;
+
+no rows selected
+
+SQL> DESC student1;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SID                                                NUMBER(38)
+ SNAME                                              VARCHAR2(30)
+ DEPART                                             NUMBER(38)
+
+SQL> DESC employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SID                                       NOT NULL NUMBER(38)
+ SNAME                                              VARCHAR2(30)
+ DEPART                                             NUMBER(38)
+
+SQL> SELECT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 Sakshith                                1
+       104 Kamal                                   1
+       105 Lalu Yadhav                             3
+
+SQL> UPDATE employee SET sname = UPPER(sname);
+
+5 rows updated.
+
+SQL> SELECT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 VIVEK                                   1
+       102 MUNEEB                                  2
+       103 SAKSHITH                                1
+       104 KAMAL                                   1
+       105 LALU YADHAV                             3
+
+SQL> UPDATE employee SET sname = Initcap(sname);
+
+5 rows updated.
+
+SQL> SELECT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 Sakshith                                1
+       104 Kamal                                   1
+       105 Lalu Yadhav                             3
+
+SQL> UPDATE employee SET sname = UPPER(sname) WHERE sid = 103;
+
+1 row updated.
+
+SQL> SELECT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+       105 Lalu Yadhav                             3
+
+SQL> DELETE FROM employee WHERE sid = 105;
+
+1 row deleted.
+
+SQL> SELECT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> SELECT * FROM student1;
+
+no rows selected
+
+SQL> DESC employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SID                                       NOT NULL NUMBER(38)
+ SNAME                                              VARCHAR2(30)
+ DEPART                                             NUMBER(38)
+
+SQL> DESC student1;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SID                                                NUMBER(38)
+ SNAME                                              VARCHAR2(30)
+ DEPART                                             NUMBER(38)
+
+SQL> INSERT INTO employee VALUES  AS SELECT * FROM employee;
+INSERT INTO employee VALUES  AS SELECT * FROM employee
+                             *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> INSERT INTO employee VALUES  (SELECT * FROM employee);
+INSERT INTO employee VALUES  (SELECT * FROM employee)
+                              *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> INSERT INTO employee VALUES SELECT * FROM employee;
+INSERT INTO employee VALUES SELECT * FROM employee
+                            *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> INSERT INTO employee SELECT * FROM employee;
+INSERT INTO employee SELECT * FROM employee
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C009350) violated
+
+
+SQL> INSERT INTO employee as SELECT * FROM employee;
+INSERT INTO employee as SELECT * FROM employee
+                     *
+ERROR at line 1:
+ORA-00926: missing VALUES keyword
+
+
+SQL> INSERT INTO employee VALUES (SELECT * FROM employee);
+INSERT INTO employee VALUES (SELECT * FROM employee)
+                             *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL>
+SQL>
+SQL> INSERT INTO employee SELECT * FROM employee;
+INSERT INTO employee SELECT * FROM employee
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C009350) violated
+
+
+SQL> INSERT INTO student1 SELECT * FROM employee;
+
+4 rows created.
+
+SQL> SELECT 10 + 20 FROM DUAL;
+
+     10+20
+----------
+        30
+
+SQL> SELECT USER() FROM DUAL;
+SELECT USER() FROM DUAL
+           *
+ERROR at line 1:
+ORA-00923: FROM keyword not found where expected
+
+
+SQL> SELECT USER FROM DUAL;
+
+USER
+--------------------------------------------------------------------------------
+SYSTEM
+
+SQL> SELECT UPPER('Muneeb') FROM DUAL;
+
+UPPER(
+------
+MUNEEB
+
+SQL> SELECT * FROM student1;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> SELECT SID, SNAME 'Student Name', depart FROM student1;
+SELECT SID, SNAME 'Student Name', depart FROM student1
+                  *
+ERROR at line 1:
+ORA-00923: FROM keyword not found where expected
+
+
+SQL> SELECT SID, SNAME as "Student Name", depart FROM student1;
+
+       SID Student Name                       DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> SELECT SNAME || ' is a student of VCE' FROM student1;
+
+SNAME||'ISASTUDENTOFVCE'
+--------------------------------------------------
+Vivek is a student of VCE
+Muneeb is a student of VCE
+SAKSHITH is a student of VCE
+Kamal is a student of VCE
+
+SQL> SELECT DISTINCT * FROM employee;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> SELECT DISTINCT(DEPART) FROM employee;
+
+    DEPART
+----------
+         1
+         2
+
+SQL> CREATE USER vivek IDENTIFIED BY vivek123;
+CREATE USER vivek IDENTIFIED BY vivek123
+            *
+ERROR at line 1:
+ORA-65096: invalid common user or role name
+
+
+SQL> CREATE USER vivek IDENTIFIED BY 'vivek123';
+CREATE USER vivek IDENTIFIED BY 'vivek123'
+                                *
+ERROR at line 1:
+ORA-00988: missing or invalid password(s)
+
+
+SQL> CREATE USER vivek IDENTIFIED BY 'vivek';
+CREATE USER vivek IDENTIFIED BY 'vivek'
+                                *
+ERROR at line 1:
+ORA-00988: missing or invalid password(s)
+
+
+SQL> CREATE USER 'vivek' IDENTIFIED BY 'vivek';
+CREATE USER 'vivek' IDENTIFIED BY 'vivek'
+            *
+ERROR at line 1:
+ORA-01935: missing user or role name
+
+
+SQL> CREATE USER vivek IDENTIFIED BY vivek123;
+CREATE USER vivek IDENTIFIED BY vivek123
+            *
+ERROR at line 1:
+ORA-65096: invalid common user or role name
+
+
+SQL> alter session set "_ORACLE_SCRIPT"=true;
+
+Session altered.
+
+SQL> CREATE USER vivek IDENTIFIED BY vivek123;
+
+User created.
+
+SQL> GRANT CONNECT TO vivek;
+
+Grant succeeded.
+
+SQL> GRANT RESOUCE TO vivek;
+GRANT RESOUCE TO vivek
+      *
+ERROR at line 1:
+ORA-01917: user or role 'RESOUCE' does not exist
+
+
+SQL> GRANT RESOUrCE TO vivek;
+
+Grant succeeded.
+
+SQL> SELECT * FROM EMPLOYEE;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> GRANT SELECT ON employee TO vivek;
+
+Grant succeeded.
+
+SQL> GRANT DELETE ON employee TO vivek;
+
+Grant succeeded.
+
+SQL> SELECT * FROM EMPLOYEE;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> GRANT ALL ON employee TO vivek;
+
+Grant succeeded.
+
+SQL> SELECT * FROM EMPLOYEE;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 VIVEK                                   1
+       102 MUNEEB                                  2
+       103 SAKSHITH                                1
+       104 KAMAL                                   1
+
+SQL> REVOKE ALL ON employee FROM vivek;
+
+Revoke succeeded.
+
+SQL> DROP USER vivek;
+DROP USER vivek
+*
+ERROR at line 1:
+ORA-01940: cannot drop a user that is currently connected
+
+
+SQL> DROP USER vivek;
+DROP USER vivek
+*
+ERROR at line 1:
+ORA-01922: CASCADE must be specified to drop 'VIVEK'
+
+
+SQL> DROP USER vivek CASCADE;
+
+User dropped.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> DISCONNECT;
+Disconnected from Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Version 19.3.0.0.0
+SQL> CONNECT SYSTEM/MANAGER;
+ERROR:
+ORA-01017: invalid username/password; logon denied
+
+
+SQL> connect
+Enter user-name: system
+Enter password:
+ERROR:
+ORA-28002: the password will expire within 7 days
+
+
+Connected.
+SQL> show autocommit;
+autocommit OFF
+SQL> SET AUTOCOMMIT ON
+SQL> SELECT * FROM STUDENT1;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 SAKSHITH                                1
+       104 Kamal                                   1
+
+SQL> DELETE FROM student1;
+
+4 rows deleted.
+
+Commit complete.
+SQL> ROLLBACK;
+
+Rollback complete.
+
+SQL> SELECT * FROM STUDENT1;
+
+no rows selected
+
+SQL> SET AUTOCOMMIT OFF
+SQL> SAVEPOINT T1;
+
+Savepoint created.
+
+SQL> INSERT INTO student1 SELECT * FROM employee;
+
+4 rows created.
+
+SQL> SAVEPOINT T2;
+
+Savepoint created.
+
+SQL> SELECT * FROM student1;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 VIVEK                                   1
+       102 MUNEEB                                  2
+       103 SAKSHITH                                1
+       104 KAMAL                                   1
+
+SQL> UPDATE student1 SET sname = INITCAP(sname);
+
+4 rows updated.
+
+SQL> SELECT * FROM student1;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 Sakshith                                1
+       104 Kamal                                   1
+
+SQL> SAVEPOINT T3;
+
+Savepoint created.
+
+SQL> DELETE FROM student1;
+
+4 rows deleted.
+
+SQL> ROLLBACK TO T3;
+
+Rollback complete.
+
+SQL> SELECT * FROM student1;
+
+       SID SNAME                              DEPART
+---------- ------------------------------ ----------
+       101 Vivek                                   1
+       102 Muneeb                                  2
+       103 Sakshith                                1
+       104 Kamal                                   1
+
+SQL> ROLLBACK;
+
+Rollback complete.
+
+SQL> SELECT * FROM student1;
+
+no rows selected
+
+SQL> COMMIT TO T1;
+COMMIT TO T1
+       *
+ERROR at line 1:
+ORA-02185: a token other than WORK follows COMMIT
+
+
+SQL> COMMIT T2;
+COMMIT T2
+       *
+ERROR at line 1:
+ORA-02185: a token other than WORK follows COMMIT
+
+
+SQL> DROP TABLE student1;
+
+Table dropped.
+
+SQL> DROP TABLE employee;
+
+Table dropped.
+
+SQL> DROP TABLE department;
+
+Table dropped.
+
+SQL> CREATE TABLE students (
+  2  sid INT,
+  3  sname VARCHAR2(30),
+  4  gender char(1),
+  5  cgpa NUMBER(4,2),
+  6  doj DATE);
+CREATE TABLE students (
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> edit
+Wrote file afiedt.buf
+
+  1  CREATE TABLE students (
+  2  sid INT,
+  3  sname VARCHAR2(30),
+  4  gender char(1),
+  5  cgpa NUMBER(4,2),
+  6* doj DATE)
+SQL> DROP TABLE students;
+
+Table dropped.
+
+SQL> CREATE TABLE students (
+  2  sid INT,
+  3  sname VARCHAR2(30),
+  4  gender char(1),
+  5  cgpa NUMBER(4,2),
+  6  doj DATE)
+  7  /
+
+Table created.
+
+SQL> INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj');
+Enter value for sid: 101
+Enter value for sname: Vivek
+Enter value for gender: M
+Enter value for cgpa: 10
+Enter value for doj: 10-Jan-21
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (101, 'Vivek', 'M',10, '10-Jan-21')
+
+1 row created.
+
+SQL> /
+Enter value for sid: 102
+Enter value for sname: Sakshith
+Enter value for gender: M
+Enter value for cgpa: 10
+Enter value for doj: 10-Feb-21
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (102, 'Sakshith', 'M',10, '10-Feb-21')
+
+1 row created.
+
+SQL> /
+Enter value for sid: 104
+Enter value for sname: Rekha
+Enter value for gender: F
+Enter value for cgpa: 7.9
+Enter value for doj: 10-Mar-24
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (104, 'Rekha', 'F',7.9, '10-Mar-24')
+
+1 row created.
+
+SQL> /
+Enter value for sid: 105
+Enter value for sname: Anu
+Enter value for gender: F
+Enter value for cgpa: 5.9
+Enter value for doj: 10-Jan-21
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (105, 'Anu', 'F',5.9, '10-Jan-21')
+
+1 row created.
+
+SQL> /
+Enter value for sid: 106
+Enter value for sname: Muneeb
+Enter value for gender: M
+Enter value for cgpa: 9.6
+Enter value for doj: 10-Jan-21
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (106, 'Muneeb', 'M',9.6, '10-Jan-21')
+
+1 row created.
+
+SQL> /
+Enter value for sid: 107
+Enter value for sname: Kamal
+Enter value for gender: M
+Enter value for cgpa: 9.8
+Enter value for doj: 10-Mar-21
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (107, 'Kamal', 'M',9.8, '10-Mar-21')
+
+1 row created.
+
+SQL> /
+Enter value for sid: 108
+Enter value for sname: Shruthi
+Enter value for gender: F
+Enter value for cgpa: 9.9
+Enter value for doj: 10-Apr-21
+old   1: INSERT INTO students VALUES (&sid, '&sname', '&gender',&cgpa, '&doj')
+new   1: INSERT INTO students VALUES (108, 'Shruthi', 'F',9.9, '10-Apr-21')
+
+1 row created.
+
+SQL> SELECT * FROM students;
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       102 Sakshith                       M         10 10-FEB-21
+       104 Rekha                          F        7.9 10-MAR-24
+       105 Anu                            F        5.9 10-JAN-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       107 Kamal                          M        9.8 10-MAR-21
+       108 Shruthi                        F        9.9 10-APR-21
+
+7 rows selected.
+
+SQL> SELECT * FROM students WHERE cgpa = 10 or cgpa = 9.9 or cgpa = 7.9;
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       102 Sakshith                       M         10 10-FEB-21
+       104 Rekha                          F        7.9 10-MAR-24
+       108 Shruthi                        F        9.9 10-APR-21
+
+SQL> SELECT * FROM students WHERE cgpa IN (10,7.9,9.9);
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       102 Sakshith                       M         10 10-FEB-21
+       104 Rekha                          F        7.9 10-MAR-24
+       108 Shruthi                        F        9.9 10-APR-21
+
+SQL> SELECT * FROM students WHERE cgpa NOT IN (10,7.9,9.9);
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       105 Anu                            F        5.9 10-JAN-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       107 Kamal                          M        9.8 10-MAR-21
+
+SQL> SELECT * FROM students WHERE cgpa BETWEEN 5 AND 8;
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       104 Rekha                          F        7.9 10-MAR-24
+       105 Anu                            F        5.9 10-JAN-21
+
+SQL> SELECT * FROM students WHERE cgpa NOT BETWEEN 5 AND 8;
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       102 Sakshith                       M         10 10-FEB-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       107 Kamal                          M        9.8 10-MAR-21
+       108 Shruthi                        F        9.9 10-APR-21
+
+SQL> SELECT * FROM students WHERE sname LIKE 'S%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       102 Sakshith                       M         10 10-FEB-21
+       108 Shruthi                        F        9.9 10-APR-21
+
+SQL> SELECT * FROM students WHERE sname NOT LIKE 'S%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       104 Rekha                          F        7.9 10-MAR-24
+       105 Anu                            F        5.9 10-JAN-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       107 Kamal                          M        9.8 10-MAR-21
+
+SQL> SELECT * FROM students WHERE sname LIKE '%a';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       104 Rekha                          F        7.9 10-MAR-24
+
+SQL> SELECT * FROM students WHERE sname LIKE '%a%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       102 Sakshith                       M         10 10-FEB-21
+       104 Rekha                          F        7.9 10-MAR-24
+       107 Kamal                          M        9.8 10-MAR-21
+
+SQL> SELECT * FROM students WHERE sname NOT LIKE '%a%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       105 Anu                            F        5.9 10-JAN-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       108 Shruthi                        F        9.9 10-APR-21
+
+SQL> SELECT * FROM students WHERE LOWER(sname) NOT LIKE '%a%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       108 Shruthi                        F        9.9 10-APR-21
+
+SQL> SELECT * FROM students WHERE LOWER(sname) LIKE '%a%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       102 Sakshith                       M         10 10-FEB-21
+       104 Rekha                          F        7.9 10-MAR-24
+       105 Anu                            F        5.9 10-JAN-21
+       107 Kamal                          M        9.8 10-MAR-21
+
+SQL> SELECT * FROM students WHERE LOWER(sname) LIKE '_a%';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       102 Sakshith                       M         10 10-FEB-21
+       107 Kamal                          M        9.8 10-MAR-21
+
+SQL> SELECT * FROM students WHERE LOWER(sname) LIKE '__a%';
+
+no rows selected
+
+SQL> SELECT * FROM students WHERE LOWER(sname) LIKE '%a_';
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       107 Kamal                          M        9.8 10-MAR-21
+
+SQL> SELECT * FROM students WHERE sname IS NULL;
+
+no rows selected
+
+SQL> SELECT * FROM students WHERE sname IS NOT NULL;
+
+       SID SNAME                          G       CGPA DOJ
+---------- ------------------------------ - ---------- ---------
+       101 Vivek                          M         10 10-JAN-21
+       102 Sakshith                       M         10 10-FEB-21
+       104 Rekha                          F        7.9 10-MAR-24
+       105 Anu                            F        5.9 10-JAN-21
+       106 Muneeb                         M        9.6 10-JAN-21
+       107 Kamal                          M        9.8 10-MAR-21
+       108 Shruthi                        F        9.9 10-APR-21
+
+7 rows selected.
+
+SQL>
